@@ -31,7 +31,7 @@ jobs:
       run: npm run lint --if-present # Runs linting if a "lint" script is defined in package.json
 
     - name: Audit Dependencies # this step checks for vulnerabilities in dependencies
-      run: npm audit --audit-level=moderate
+      run: npm audit fix --force
 
     - name: Build Application
       run: npm run build
