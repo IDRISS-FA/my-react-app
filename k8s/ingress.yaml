@@ -1,0 +1,15 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: my-react-app-ingress
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        pathType: Prefix # used for matching all paths
+        backend:
+          service:
+            name: my-react-app-service #same name as in service.yaml
+            port:
+              number: 80 #port defined in service.yaml 
