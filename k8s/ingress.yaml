@@ -2,14 +2,29 @@ apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
   name: my-react-app-ingress
+  annotations:
+    # 1. Ingress Controller annotations
+    nginx.ingress.kubernetes.io/rewrite-target: /
+    # 2. CERT-MANAGER ANNOTATION - Automatic TLS certs
+    cert-manager.io/cluster-issuer: "letsencrypt-prod" # or "letsencrypt-staging"
+    # 3. Force HTTPS redirect (optional but recommended)
+    nginx.ingress.kubernetes.io/force-ssl-redirect: "true"
 spec:
+  ingressClassName: nginx # Explicitly use nginx class
+  # 4. TLS CONFIGURATION SECTION
+  tls:
+  - hosts:
+    - my-react-app.local # our app domain
+    secretName: my-react-app-tls-secret # cert-manager stores cert here
+  # 5. HOST-BASED ROUTING RULES
   rules:
-  - http:
+  - host: my-react-app.local # MUST match TLS host above
+    http:
       paths:
       - path: /
-        pathType: Prefix # used for matching all paths
+        pathType: Prefix
         backend:
           service:
-            name: my-react-app-service #same name as in service.yaml
+            name: my-react-app-service
             port:
-              number: 80 #port defined in service.yaml 
+              number: 80
